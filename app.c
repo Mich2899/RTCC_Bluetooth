@@ -37,6 +37,8 @@
 
 
 #include "app.h"
+#include "src/timers.h"
+#include "src/oscillators.h"
 
 // Include logging for this file
 #define INCLUDE_LOG_DEBUG 1
@@ -83,12 +85,22 @@ SL_WEAK void app_init(void)
   // Put your application 1-time init code here
   // This is called once during start-up.
   // Don't call any Bluetooth API functions until after the boot event.
-
-
   // Student Edit: Add a call to gpioInit() here
   gpioInit();
+  init_oscillators();
+  initLETIMER0();
 
+#if(LOWEST_ENERGY_MODE ==1 )
+      sl_power_manager_add_em_requirement(SL_POWER_MANAGER_EM1);
+#endif
 
+#if(LOWEST_ENERGY_MODE ==2 )
+      sl_power_manager_add_em_requirement(SL_POWER_MANAGER_EM2);
+#endif
+
+  LETIMER_Enable(LETIMER0,true);                      //Enable LETIMER0
+  NVIC_ClearPendingIRQ (LETIMER0_IRQn);               //Clear all the pending IRQ
+  NVIC_EnableIRQ(LETIMER0_IRQn);                      //Enable timer
 
 }
 
@@ -99,7 +111,7 @@ SL_WEAK void app_init(void)
  * comment out this function. Wait loops are a bad idea in general.
  * We'll discuss how to do this a better way in the next assignment.
  *****************************************************************************/
-static void delayApprox(int delay)
+/*static void delayApprox(int delay)
 {
   volatile int i;
 
@@ -109,7 +121,7 @@ static void delayApprox(int delay)
 
 } // delayApprox()
 
-
+*/
 
 
 /**************************************************************************//**
@@ -123,7 +135,7 @@ SL_WEAK void app_process_action(void)
   //         We will create/use a scheme that is far more energy efficient in
   //         later assignments.
 
-  delayApprox(3500000);
+/* delayApprox(3500000);
 
   gpioLed0SetOn();
  // gpioLed1SetOn();
@@ -131,7 +143,7 @@ SL_WEAK void app_process_action(void)
   delayApprox(3500000);
 
   gpioLed0SetOff();
- // gpioLed1SetOff();
+ // gpioLed1SetOff();*/
 
 }
 

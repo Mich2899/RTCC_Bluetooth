@@ -40,6 +40,8 @@
  ******************************************************************************/
  
  #include "main.h"
+ #include "src/timers.h"
+ #include "src/oscillators.h"
  
 // Include logging for this file
 #define INCLUDE_LOG_DEBUG 1
@@ -68,10 +70,8 @@ int main(void)
   sl_system_kernel_start();
   
 #else // SL_CATALOG_KERNEL_PRESENT
-
   // The so-called super-loop, sometimes called: "the main while(1) loop"
   while (1) {
-  
     // Do not remove this call: Silicon Labs components process action routine
     // must be called from the super loop.
     // Students: This call will eventually call the function sl_bt_on_event()
