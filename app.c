@@ -37,8 +37,7 @@
 
 
 #include "app.h"
-#include "src/timers.h"
-#include "src/oscillators.h"
+
 
 // Include logging for this file
 #define INCLUDE_LOG_DEBUG 1
@@ -86,10 +85,10 @@ SL_WEAK void app_init(void)
   // This is called once during start-up.
   // Don't call any Bluetooth API functions until after the boot event.
   // Student Edit: Add a call to gpioInit() here
-  gpioInit();
-  init_oscillators();
-  initLETIMER0();
 
+//NOTE:This section of code is from previous assigment
+#if 0
+  gpioInit();
 #if(LOWEST_ENERGY_MODE ==1 )
       sl_power_manager_add_em_requirement(SL_POWER_MANAGER_EM1);
 #endif
@@ -97,6 +96,12 @@ SL_WEAK void app_init(void)
 #if(LOWEST_ENERGY_MODE ==2 )
       sl_power_manager_add_em_requirement(SL_POWER_MANAGER_EM2);
 #endif
+
+#endif
+
+  init_oscillators();                                 //Initialize oscillators
+  initLETIMER0();                                     //initialize LETIMER0
+  I2C_init();                                         //Initialize I2C
 
   LETIMER_Enable(LETIMER0,true);                      //Enable LETIMER0
   NVIC_ClearPendingIRQ (LETIMER0_IRQn);               //Clear all the pending IRQ
@@ -135,15 +140,17 @@ SL_WEAK void app_process_action(void)
   //         We will create/use a scheme that is far more energy efficient in
   //         later assignments.
 
-/* delayApprox(3500000);
+  uint32_t evt;                                   //variable to determine event
+    evt = getNextEvent();
+  switch (evt) {                                  //based on event perform required operation
 
-  gpioLed0SetOn();
- // gpioLed1SetOn();
+    case evtReadTemperature:                      //for now there is just one event in the scheduler
+      read_temp_from_si7021();                    //read temperature from SI7021
+      break;
 
-  delayApprox(3500000);
-
-  gpioLed0SetOff();
- // gpioLed1SetOff();*/
+    default:                                      //Do nothing
+      break;
+  } // switch
 
 }
 

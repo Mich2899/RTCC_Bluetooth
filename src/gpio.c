@@ -20,18 +20,19 @@
 
 
 // Set GPIO drive strengths and modes of operation
+//NOTE: gpioInit has been removed from the app_init function anyways.
 void gpioInit()
 {
 
   // Student Edit:
 
 	//GPIO_DriveStrengthSet(LED0_port, gpioDriveStrengthStrongAlternateStrong);
-	GPIO_DriveStrengthSet(LED0_port, gpioDriveStrengthWeakAlternateWeak);
-	GPIO_PinModeSet(LED0_port, LED0_pin, gpioModePushPull, false);
+//	GPIO_DriveStrengthSet(LED0_port, gpioDriveStrengthWeakAlternateWeak);
+//	GPIO_PinModeSet(LED0_port, LED0_pin, gpioModePushPull, false);
 
 	//GPIO_DriveStrengthSet(LED1_port, gpioDriveStrengthStrongAlternateStrong);
-	//GPIO_DriveStrengthSet(LED1_port, gpioDriveStrengthWeakAlternateWeak);
-	//GPIO_PinModeSet(LED1_port, LED1_pin, gpioModePushPull, false);
+//	GPIO_DriveStrengthSet(LED1_port, gpioDriveStrengthWeakAlternateWeak);
+//	GPIO_PinModeSet(LED1_port, LED1_pin, gpioModePushPull, false);
 
 
 

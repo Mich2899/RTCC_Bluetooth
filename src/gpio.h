@@ -26,12 +26,6 @@
 #define LED1_port gpioPortF
 #define LED1_pin   5
 
-
-
-
-
-
-
 // Function prototypes
 void gpioInit();
 void gpioLed0SetOn();

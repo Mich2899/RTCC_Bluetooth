@@ -7,11 +7,17 @@
 
 #ifndef SRC_IRQ_H_
 #define SRC_IRQ_H_
+
 #include "timers.h"
-#include "gpio.h"
 #include "oscillators.h"
+#include "scheduler.h"
 
 //function prorotypes
+/* function       : LETIMER0_IRQHandler
+ * params         : void
+ * brief          : check for any interrupts, turn the LED on and off accordingly and reset the interrupt flags.
+ * return type    : void
+ */
 void LETIMER0_IRQHandler(void);
 
 #endif /* SRC_IRQ_H_ */

@@ -5,13 +5,11 @@
  *      Author: mich1576
  */
 
+/*********************************************************INCLUDES****************************************************************/
 #include "irq.h"
 
-/* function       : LETIMER0_IRQHandler
- * params         : void
- * brief          : check for any interrupts, turn the LED on and off accordingly and reset the interrupt flags.
- * return type    : void
- */
+/****************************************************FUNCTION DEFINITION*********************************************************/
+//Check for any interrupts, turn the LED on and off accordingly and reset the interrupt flags.
 void LETIMER0_IRQHandler (void) {
 
     uint32_t flags;
@@ -21,25 +19,8 @@ void LETIMER0_IRQHandler (void) {
         LETIMER_IntClear(LETIMER0, flags);
 
         if(flags & LETIMER_IF_UF){
-            //everytme there is an underflow interrupt turn the led on
-            gpioLed0SetOn();
-            //reset the COMP0 and COMP1 registers for continuous operation
-#if ((LOWEST_ENERGY_MODE == 0) || (LOWEST_ENERGY_MODE == 1) || (LOWEST_ENERGY_MODE == 2))
-              LETIMER_CompareSet(LETIMER0, 0, VALUE_TO_LOAD_LFXO_COMP0);
-#elif(LOWEST_ENERGY_MODE == 3)
-              LETIMER_CompareSet(LETIMER0, 0, VALUE_TO_LOAD_ULFRCO_COMP0);
-#endif
-        }
-
-        if(flags & LETIMER_IF_COMP1){
-            //everytme there is a COMP1 interrupt turn the led off
-            gpioLed0SetOff();
-            //reset the COMP0 and COMP1 registers for continuous operation
-#if ((LOWEST_ENERGY_MODE == 0) || (LOWEST_ENERGY_MODE == 1) || (LOWEST_ENERGY_MODE == 2))
-                LETIMER_CompareSet(LETIMER0, 1, VALUE_TO_LOAD_LFXO_COMP1);
-#elif(LOWEST_ENERGY_MODE == 3)
-                LETIMER_CompareSet(LETIMER0, 1, VALUE_TO_LOAD_ULFRCO_COMP1);
-#endif
+            //call scheduler to read temperature data from SI7021
+            schedulerSetReadTempEvent();
         }
 
 } // LETIMER0_IRQHandler()

@@ -4,17 +4,17 @@
  *  Created on: Sep 9, 2021
  *      Author: mich1576
  */
+
+/*********************************************************INCLUDES****************************************************************/
 #include "timers.h"
 
+/*******************************************************GLOBAL VARIABLES*********************************************************/
 //Logging for this file
 #define INCLUDE_LOG_DEBUG 1
 #include "src/log.h"
 
-/* function       : initLETIMER0
- * params         : void
- * brief          : initialize LETIMER0, set the compare register values based on the energy mode settings and set the correct settings for interrupt
- * return type    : void
- */
+/****************************************************FUNCTION DEFINITION**********************************************************/
+//initialize LETIMER0, set the compare register values based on the energy mode settings and set the correct settings for interrupt
 void initLETIMER0 (void){
   LETIMER_Init_TypeDef timer_instance=
       {
@@ -37,18 +37,59 @@ void initLETIMER0 (void){
 
   LETIMER_Init(LETIMER0, &timer_instance);
 
-#if ((LOWEST_ENERGY_MODE == 0) || (LOWEST_ENERGY_MODE == 1) || (LOWEST_ENERGY_MODE == 2))
+//This block of code is from previous assignment
+#if 0
     LETIMER_CompareSet(LETIMER0, 0, VALUE_TO_LOAD_LFXO_COMP0);
     LETIMER_CompareSet(LETIMER0, 1, VALUE_TO_LOAD_LFXO_COMP1);
-
-#elif(LOWEST_ENERGY_MODE == 3)
-    LETIMER_CompareSet(LETIMER0, 0, VALUE_TO_LOAD_ULFRCO_COMP0);
-    LETIMER_CompareSet(LETIMER0, 1, VALUE_TO_LOAD_ULFRCO_COMP1);
+    LETIMER_IntClear(LETIMER0, LETIMER_IF_COMP1);                                         //clear the COMP1 interrupt flag
+    LETIMER_IntEnable(LETIMER0, LETIMER_IEN_UF | LETIMER_IEN_COMP1);                       //enable UF flag in interrupt enable register
 #endif
 
-  LETIMER_IntClear(LETIMER0, LETIMER_IF_UF);          //clear the underflow flag
-  LETIMER_IntClear(LETIMER0, LETIMER_IF_COMP1);       //clear the COMP1 interrupt flag
-  LETIMER0->IEN = LETIMER_IEN_UF | LETIMER_IEN_COMP1; //enable both the flags in interrupt enable register
+#if 1
+    LETIMER_CompareSet(LETIMER0, 0, VALUE_TO_LOAD_ULFRCO_COMP0);
+//    LETIMER_CompareSet(LETIMER0, 1, VALUE_TO_LOAD_ULFRCO_COMP1);
+#endif
 
-//  LETIMER_Enable(LETIMER0,true);                      //Enable LETIMER0
+  LETIMER_IntClear(LETIMER0, LETIMER_IF_UF);                                              //clear the underflow flag
+  LETIMER_IntEnable(LETIMER0, LETIMER_IEN_UF);                                            //enable underflow in interruot enable register
+
+}
+
+//Takes input in microseconds and provides required amount of delay
+void timerWaitUs(uint32_t us_wait){
+
+  uint32_t difference, current;
+
+#if 0
+  uint32_t us_each_tick   = US_EACH_TICK_LFXO ;
+  uint32_t wait_for_ticks = (us_wait/us_each_tick);
+    if(wait_for_ticks> VALUE_TO_LOAD_LFXO_COMP0){
+        LOG_ERROR("Invalid wait input\n\r");
+        exit(-1);
+    }
+#endif
+
+#if 1
+    uint32_t us_each_tick   = US_EACH_TICK_ULFRCO ;               //Using the ULFRCO and tick for that
+    uint32_t wait_for_ticks = (us_wait/us_each_tick);             //calculate the number of ticks required for the same
+    if(wait_for_ticks> VALUE_TO_LOAD_ULFRCO_COMP0){               //if the value for ticks exceeds the range provide error message
+        LOG_ERROR("Invalid wait input\n\r");
+    }
+
+    else{
+            current = LETIMER_CounterGet (LETIMER0);              //take the current value of the timer
+            if( current > wait_for_ticks ){                       //check if the required number of ticks are greater than current counter value
+                difference= current - wait_for_ticks;             //take the difference between current timer counter value and the required ticks
+                while(current>=difference){                       //poll until required ticks are obtained
+                   current = LETIMER_CounterGet (LETIMER0);
+                }
+            }
+            else{
+                difference =VALUE_TO_LOAD_ULFRCO_COMP0 - (wait_for_ticks - current); //count until the counter reaches zero and calculate remaining number of ticks
+                 while(current != difference){
+                     current = LETIMER_CounterGet (LETIMER0);
+                 }
+            }
+        }
+#endif
 }
