@@ -71,11 +71,9 @@
 //   up the MCU from the call to sl_power_manager_sleep() in the main while (1)
 //   loop.
 // Students: We'll need to modify this for A2 onward.
-#if 0
+#if (LOWEST_ENERGY_MODE == 0)
 #define APP_IS_OK_TO_SLEEP      (false)
-#endif
-
-#if 1
+#else
 #define APP_IS_OK_TO_SLEEP      (true)
 #endif
 // Return values for app_sleep_on_isr_exit():

@@ -38,20 +38,22 @@ void initLETIMER0 (void){
   LETIMER_Init(LETIMER0, &timer_instance);
 
 //This block of code is from previous assignment
-#if 0
+#if ((LOWEST_ENERGY_MODE == 0) || (LOWEST_ENERGY_MODE == 1) || (LOWEST_ENERGY_MODE == 2))
     LETIMER_CompareSet(LETIMER0, 0, VALUE_TO_LOAD_LFXO_COMP0);
-    LETIMER_CompareSet(LETIMER0, 1, VALUE_TO_LOAD_LFXO_COMP1);
-    LETIMER_IntClear(LETIMER0, LETIMER_IF_COMP1);                                         //clear the COMP1 interrupt flag
-    LETIMER_IntEnable(LETIMER0, LETIMER_IEN_UF | LETIMER_IEN_COMP1);                       //enable UF flag in interrupt enable register
-#endif
+    LETIMER_IntClear(LETIMER0, LETIMER_IF_UF);                                              //clear the underflow flag
+    LETIMER_IntEnable(LETIMER0, LETIMER_IEN_UF);                                            //enable underflow in interruot enable register
 
-#if 1
+//    LETIMER_CompareSet(LETIMER0, 1, VALUE_TO_LOAD_LFXO_COMP1);
+//    LETIMER_IntClear(LETIMER0, LETIMER_IF_COMP1);                                         //clear the COMP1 interrupt flag
+//    LETIMER_IntEnable(LETIMER0, LETIMER_IEN_UF | LETIMER_IEN_COMP1);                       //enable UF flag in interrupt enable register
+
+#elif (LOWEST_ENERGY_MODE == 3)
     LETIMER_CompareSet(LETIMER0, 0, VALUE_TO_LOAD_ULFRCO_COMP0);
 //    LETIMER_CompareSet(LETIMER0, 1, VALUE_TO_LOAD_ULFRCO_COMP1);
-#endif
 
   LETIMER_IntClear(LETIMER0, LETIMER_IF_UF);                                              //clear the underflow flag
   LETIMER_IntEnable(LETIMER0, LETIMER_IEN_UF);                                            //enable underflow in interruot enable register
+#endif
 
 }
 
@@ -60,21 +62,20 @@ void timerWaitUs(uint32_t us_wait){
 
   uint32_t difference, current;
 
-#if 0
+#if ((LOWEST_ENERGY_MODE == 0) || (LOWEST_ENERGY_MODE == 1) || (LOWEST_ENERGY_MODE == 2))
   uint32_t us_each_tick   = US_EACH_TICK_LFXO ;
   uint32_t wait_for_ticks = (us_wait/us_each_tick);
     if(wait_for_ticks> VALUE_TO_LOAD_LFXO_COMP0){
         LOG_ERROR("Invalid wait input\n\r");
-        exit(-1);
     }
-#endif
+#elif (LOWEST_ENERGY_MODE == 3)
 
-#if 1
     uint32_t us_each_tick   = US_EACH_TICK_ULFRCO ;               //Using the ULFRCO and tick for that
     uint32_t wait_for_ticks = (us_wait/us_each_tick);             //calculate the number of ticks required for the same
     if(wait_for_ticks> VALUE_TO_LOAD_ULFRCO_COMP0){               //if the value for ticks exceeds the range provide error message
         LOG_ERROR("Invalid wait input\n\r");
     }
+#endif
 
     else{
             current = LETIMER_CounterGet (LETIMER0);              //take the current value of the timer
@@ -91,5 +92,4 @@ void timerWaitUs(uint32_t us_wait){
                  }
             }
         }
-#endif
 }

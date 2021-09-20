@@ -87,18 +87,15 @@ SL_WEAK void app_init(void)
   // Student Edit: Add a call to gpioInit() here
 
 //NOTE:This section of code is from previous assigment
-#if 0
-  gpioInit();
+
 #if(LOWEST_ENERGY_MODE ==1 )
       sl_power_manager_add_em_requirement(SL_POWER_MANAGER_EM1);
-#endif
-
-#if(LOWEST_ENERGY_MODE ==2 )
+#elif(LOWEST_ENERGY_MODE ==2 )
       sl_power_manager_add_em_requirement(SL_POWER_MANAGER_EM2);
 #endif
 
-#endif
 
+  //gpioInit();
   init_oscillators();                                 //Initialize oscillators
   initLETIMER0();                                     //initialize LETIMER0
   I2C_init();                                         //Initialize I2C

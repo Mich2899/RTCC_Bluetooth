@@ -87,7 +87,7 @@ void I2C_read(){
   }
   else{
     Temperature = ((175.72*(temp_data))/65536)-46.85;     //convert 16-bit data in degree Celcius format
-    //LOG_INFO("Temperature: %d\n\r", Temperature);
+    LOG_INFO("Temperature: %d\n\r", Temperature);
   }
 }
 

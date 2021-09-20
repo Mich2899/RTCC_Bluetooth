@@ -23,10 +23,10 @@
 #define ACTUAL_CLK_FREQ_ULFRCO      (FREQUENCY_ULFRCO/PRESCALAR_VALUE_ULFRCO)     //clock frequency after pre-scaling for ULFRCO
 
 #define VALUE_TO_LOAD_LFXO_COMP0    (ACTUAL_CLK_FREQ_LFXO *LETIMER_PERIOD_MS)/1000  //value to load in comp0 when LFXO is used
-#define VALUE_TO_LOAD_LFXO_COMP1    (ACTUAL_CLK_FREQ_LFXO *(LETIMER_PERIOD_MS-LETIMER_ON_TIME_MS))/1000 //value to load in comp1 when LFXO is used
+//#define VALUE_TO_LOAD_LFXO_COMP1    (ACTUAL_CLK_FREQ_LFXO *(LETIMER_PERIOD_MS-LETIMER_ON_TIME_MS))/1000 //value to load in comp1 when LFXO is used
 
 #define VALUE_TO_LOAD_ULFRCO_COMP0  (ACTUAL_CLK_FREQ_ULFRCO *LETIMER_PERIOD_MS)/1000       //value to load in comp0 when ULFRCO is used
-#define VALUE_TO_LOAD_ULFRCO_COMP1  (ACTUAL_CLK_FREQ_ULFRCO *(LETIMER_PERIOD_MS-LETIMER_ON_TIME_MS))/1000 //value to load in comp1 when ULFRCO is used
+//#define VALUE_TO_LOAD_ULFRCO_COMP1  (ACTUAL_CLK_FREQ_ULFRCO *(LETIMER_PERIOD_MS-LETIMER_ON_TIME_MS))/1000 //value to load in comp1 when ULFRCO is used
 
 //function prototypes
 /* function       : init_oscillators
