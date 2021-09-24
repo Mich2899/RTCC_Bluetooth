@@ -59,12 +59,8 @@ void I2C_write();
  * */
 void I2C_read();
 
-/* function     : read_temp_from_si7021
- * params       : none
- * brief        : Used to perform temperature measurement
- *                for si7021
- * return_type  : void
- * */
-void read_temp_from_si7021();
+void warmup();
+
+void store();
 
 #endif /* SRC_I2C_H_ */

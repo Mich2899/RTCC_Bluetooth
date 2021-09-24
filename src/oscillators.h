@@ -28,6 +28,9 @@
 #define VALUE_TO_LOAD_ULFRCO_COMP0  (ACTUAL_CLK_FREQ_ULFRCO *LETIMER_PERIOD_MS)/1000       //value to load in comp0 when ULFRCO is used
 //#define VALUE_TO_LOAD_ULFRCO_COMP1  (ACTUAL_CLK_FREQ_ULFRCO *(LETIMER_PERIOD_MS-LETIMER_ON_TIME_MS))/1000 //value to load in comp1 when ULFRCO is used
 
+#define MAX_VALUE_TO_LOAD_COMP1  65535  //max value that can be loaded in comp1 when ULFRCO is used
+
+
 //function prototypes
 /* function       : init_oscillators
  * params         : void

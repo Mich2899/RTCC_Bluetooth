@@ -46,7 +46,7 @@ void I2C_init(){
         };
 
   I2CSPM_Init(&I2C_Config);                               /*Initalize I2C peripheral*/
- // uint32_t i2c_bus_frequency = I2C_BusFreqGet (I2C0);
+//  uint32_t i2c_bus_frequency = I2C_BusFreqGet (I2C0);
 }
 
 //Used to perform I2C write. Sends start bit, slave address, send write command
@@ -54,17 +54,25 @@ void I2C_init(){
 void I2C_write(){
 
   I2C_TransferSeq_TypeDef transferSequence;
+
+  I2C_init();
   // Send Measure Temperature command
   cmd_data = 0xF3;                                        //Provide command to perform measurement
   transferSequence.addr = SI7021_DEVICE_ADDR << 1;        //shift device address left
   transferSequence.flags = I2C_FLAG_WRITE;                //write command
   transferSequence.buf[0].data = &cmd_data;               //pointer to data to write
   transferSequence.buf[0].len = sizeof(cmd_data);
-  transferStatus = I2CSPM_Transfer (I2C0, &transferSequence); //check the status of this operation
 
-    if (transferStatus != i2cTransferDone) {
-        LOG_ERROR("I2CSPM_Transfer: I2C bus write of cmd= %d failed", (int32_t)cmd_data );
-    }
+  // config NVIC to generate an IRQ for the I2C0 module.
+  // ==>> disable this NVIC interrupt when the I2C transfer has completed
+  NVIC_EnableIRQ(I2C0_IRQn);
+
+  // config NVIC to generate an IRQ for the I2C0 module.
+  transferStatus = I2C_TransferInit (I2C0, &transferSequence);
+  if (transferStatus < 0) {
+  LOG_ERROR("I2C_TransferInit() Write error = %d", transferStatus);
+  }
+
 }
 
 //Used to perform I2C read. Sends repeated start bit,
@@ -74,31 +82,56 @@ void I2C_read(){
   I2C_TransferSeq_TypeDef transferSequence;
   // Send Measure Temperature command
 
+  I2C_init();
   //set the transfer sequence for read
   transferSequence.addr = SI7021_DEVICE_ADDR << 1;        //shift device address left
   transferSequence.flags = I2C_FLAG_READ;                 //read command
   transferSequence.buf[0].data = read_data;               //pointer to data to write
   transferSequence.buf[0].len = sizeof(read_data);
-  transferStatus = I2CSPM_Transfer (I2C0, &transferSequence);//check the status of this operation
 
-  temp_data = (read_data[0]<<8) + read_data[1];           //store the two 8-bit data into one 16-bit variable
-  if (transferStatus != i2cTransferDone) {                //check status of this operation
-      LOG_ERROR("Read Error");
+  // config NVIC to generate an IRQ for the I2C0 module.
+  // ==>> disable this NVIC interrupt when the I2C transfer has completed
+  NVIC_EnableIRQ(I2C0_IRQn);
+  // config NVIC to generate an IRQ for the I2C0 module.
+  transferStatus = I2C_TransferInit (I2C0, &transferSequence);
+
+  if (transferStatus < 0) {
+  LOG_ERROR("I2C_TransferInit() Write error = %d", transferStatus);
   }
-  else{
+
+/*  else {
+    temp_data = (read_data[0]<<8) + read_data[1];           //store the two 8-bit data into one 16-bit variable
     Temperature = ((175.72*(temp_data))/65536)-46.85;     //convert 16-bit data in degree Celcius format
     LOG_INFO("Temperature: %d\n\r", Temperature);
   }
+*/
+
 }
 
+/*
 //Used to perform temperature measurement for si7021
 void read_temp_from_si7021(){
   gpio_I2C(1);                                            //enable I2C sensor
-  timerWaitUs(80000);                                     //wait for 80ms for power to stabilize+ boot time
+  timerWaitUs_polled(80000);                              //wait for 80ms for power to stabilize+ boot time
 
   I2C_write();                                            //perform measure command write
-  timerWaitUs(10000);                                     //conversion time
+  timerWaitUs_polled(10000);                              //conversion time
   I2C_read();                                             //perform read function to get the temperature data
 
   gpio_I2C(0);                                            //disable I2C sensor
+}
+*/
+
+
+void warmup(){
+  gpio_I2C(1);                                            //enable I2C sensor
+  timerWaitUs_irq(80000);                              //wait for 80ms for power to stabilize+ boot time
+}
+
+void store(){
+    temp_data = (read_data[0]<<8) + read_data[1];           //store the two 8-bit data into one 16-bit variable
+    Temperature = ((175.72*(temp_data))/65536)-46.85;     //convert 16-bit data in degree Celcius format
+    LOG_INFO("Temperature: %d\n\r", Temperature);
+
+    gpio_I2C(0);
 }

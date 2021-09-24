@@ -22,11 +22,17 @@
  */
 void initLETIMER0 ();
 
-/* function       : timerWaitUs
+/* function       : timerWaitUs_polled
  * params         : uint32_t us_wait
- * brief          : Takes input in microseconds and provides required amount of delay
+ * brief          : Takes input in microseconds and provides required amount of delay using polling method
  * return type    : void
  */
-void timerWaitUs(uint32_t us_wait);
+void timerWaitUs_polled(uint32_t us_wait);
 
+/* function       : timerWaitUs_interrupt
+ * params         : uint32_t us_wait
+ * brief          : Takes input in microseconds and provides required amount of delay using interrupt method
+ * return type    : void
+ */
+void timerWaitUs_irq(uint32_t us_wait);
 #endif /* SRC_TIMERS_H_ */

@@ -37,28 +37,22 @@ void initLETIMER0 (void){
 
   LETIMER_Init(LETIMER0, &timer_instance);
 
-//This block of code is from previous assignment
 #if ((LOWEST_ENERGY_MODE == 0) || (LOWEST_ENERGY_MODE == 1) || (LOWEST_ENERGY_MODE == 2))
     LETIMER_CompareSet(LETIMER0, 0, VALUE_TO_LOAD_LFXO_COMP0);
     LETIMER_IntClear(LETIMER0, LETIMER_IF_UF);                                              //clear the underflow flag
     LETIMER_IntEnable(LETIMER0, LETIMER_IEN_UF);                                            //enable underflow in interruot enable register
 
-//    LETIMER_CompareSet(LETIMER0, 1, VALUE_TO_LOAD_LFXO_COMP1);
-//    LETIMER_IntClear(LETIMER0, LETIMER_IF_COMP1);                                         //clear the COMP1 interrupt flag
-//    LETIMER_IntEnable(LETIMER0, LETIMER_IEN_UF | LETIMER_IEN_COMP1);                       //enable UF flag in interrupt enable register
-
 #elif (LOWEST_ENERGY_MODE == 3)
     LETIMER_CompareSet(LETIMER0, 0, VALUE_TO_LOAD_ULFRCO_COMP0);
-//    LETIMER_CompareSet(LETIMER0, 1, VALUE_TO_LOAD_ULFRCO_COMP1);
-
   LETIMER_IntClear(LETIMER0, LETIMER_IF_UF);                                              //clear the underflow flag
   LETIMER_IntEnable(LETIMER0, LETIMER_IEN_UF);                                            //enable underflow in interruot enable register
+
 #endif
 
 }
 
 //Takes input in microseconds and provides required amount of delay
-void timerWaitUs(uint32_t us_wait){
+void timerWaitUs_polled(uint32_t us_wait){
 
   uint32_t difference, current;
 
@@ -86,10 +80,45 @@ void timerWaitUs(uint32_t us_wait){
                 }
             }
             else{
+#if((LOWEST_ENERGY_MODE == 0) || (LOWEST_ENERGY_MODE == 1) || (LOWEST_ENERGY_MODE == 2))
+                difference =VALUE_TO_LOAD_LFXO_COMP0 - (wait_for_ticks - current); //count until the counter reaches zero and calculate remaining number of ticks
+#elif(LOWEST_ENERGY_MODE == 3)
                 difference =VALUE_TO_LOAD_ULFRCO_COMP0 - (wait_for_ticks - current); //count until the counter reaches zero and calculate remaining number of ticks
+#endif
                  while(current != difference){
                      current = LETIMER_CounterGet (LETIMER0);
                  }
             }
         }
+}
+
+//Takes input in microseconds and provides required amount of delay
+void timerWaitUs_irq(uint32_t us_wait){
+
+  uint32_t difference, current;
+
+#if ((LOWEST_ENERGY_MODE == 0) || (LOWEST_ENERGY_MODE == 1) || (LOWEST_ENERGY_MODE == 2))
+  uint32_t us_each_tick   = US_EACH_TICK_LFXO ;
+  uint32_t wait_for_ticks = (us_wait/us_each_tick);
+
+#elif (LOWEST_ENERGY_MODE == 3)
+
+    uint32_t us_each_tick   = US_EACH_TICK_ULFRCO ;               //Using the ULFRCO and tick for that
+    uint32_t wait_for_ticks = (us_wait/us_each_tick);             //calculate the number of ticks required for the same
+#endif
+
+    if(wait_for_ticks> MAX_VALUE_TO_LOAD_COMP1){               //if the value for ticks exceeds the range provide error message
+        LOG_ERROR("Invalid wait input\n\r");
+    }
+    else{
+            current = LETIMER_CounterGet (LETIMER0);              //take the current value of the timer
+            if( current > wait_for_ticks ){                       //check if the required number of ticks are greater than current counter value
+                difference= current - wait_for_ticks;             //take the difference between current timer counter value and the required ticks
+            }
+            else{
+                difference = MAX_VALUE_TO_LOAD_COMP1 - (wait_for_ticks - current); //count until the counter reaches zero and calculate remaining number of ticks
+            }
+            LETIMER_CompareSet(LETIMER0, 1, difference);
+            LETIMER_IntEnable(LETIMER0, LETIMER_IEN_COMP1);
+    }
 }

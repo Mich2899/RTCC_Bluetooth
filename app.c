@@ -37,6 +37,7 @@
 
 
 #include "app.h"
+#include "src/scheduler.h"
 
 
 // Include logging for this file
@@ -95,14 +96,14 @@ SL_WEAK void app_init(void)
 #endif
 
 
-  //gpioInit();
+  gpioInit();
   init_oscillators();                                 //Initialize oscillators
   initLETIMER0();                                     //initialize LETIMER0
-  I2C_init();                                         //Initialize I2C
+//  I2C_init();                                         //Initialize I2C
 
   LETIMER_Enable(LETIMER0,true);                      //Enable LETIMER0
-  NVIC_ClearPendingIRQ (LETIMER0_IRQn);               //Clear all the pending IRQ
-  NVIC_EnableIRQ(LETIMER0_IRQn);                      //Enable timer
+  NVIC_ClearPendingIRQ (LETIMER0_IRQn);               //Clear all the pending IRQ for LETIMER0
+  NVIC_EnableIRQ (LETIMER0_IRQn);                      //Enable timer
 
 }
 
@@ -139,15 +140,9 @@ SL_WEAK void app_process_action(void)
 
   uint32_t evt;                                   //variable to determine event
     evt = getNextEvent();
-  switch (evt) {                                  //based on event perform required operation
 
-    case evtReadTemperature:                      //for now there is just one event in the scheduler
-      read_temp_from_si7021();                    //read temperature from SI7021
-      break;
+  temperature_state_machine(evt);
 
-    default:                                      //Do nothing
-      break;
-  } // switch
 
 }
 

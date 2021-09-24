@@ -15,9 +15,19 @@
 //function prorotypes
 /* function       : LETIMER0_IRQHandler
  * params         : void
- * brief          : check for any interrupts, turn the LED on and off accordingly and reset the interrupt flags.
+ * brief          : check for any timer interrupts, set the scheduler event accordingly
  * return type    : void
  */
 void LETIMER0_IRQHandler(void);
+
+/* function       : I2C0_IRQHandler
+ * params         : void
+ * brief          : check for any interrupts, set the scheduler event based on the
+ *                  previous state.
+ * return type    : void
+ */
+void I2C0_IRQHandler(void);
+
+uint32_t letimerMilliseconds();
 
 #endif /* SRC_IRQ_H_ */
