@@ -63,7 +63,17 @@ void gpioLed1SetOff()
 }
 
 
-
-
+// DOS
+void gpioToggleLED0()
+{
+  static  bool on=false;
+  if (on == false) {
+    on = true;
+    GPIO_PinOutSet(LED0_port,LED0_pin);
+  } else {
+    on = false;
+    GPIO_PinOutClear(LED0_port,LED0_pin);
+  }
+} // gpioToggleLED0(0
 
 

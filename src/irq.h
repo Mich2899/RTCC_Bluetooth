@@ -11,6 +11,7 @@
 #include "timers.h"
 #include "oscillators.h"
 #include "scheduler.h"
+#include "src/gpio.h" // DOS
 
 //function prorotypes
 /* function       : LETIMER0_IRQHandler
@@ -18,7 +19,8 @@
  * brief          : check for any timer interrupts, set the scheduler event accordingly
  * return type    : void
  */
-void LETIMER0_IRQHandler(void);
+// DOS these should be private functions, dangerous to allow other .c files to know about the funciton name
+// void LETIMER0_IRQHandler(void);
 
 /* function       : I2C0_IRQHandler
  * params         : void
@@ -26,7 +28,7 @@ void LETIMER0_IRQHandler(void);
  *                  previous state.
  * return type    : void
  */
-void I2C0_IRQHandler(void);
+//void I2C0_IRQHandler(void);
 
 uint32_t letimerMilliseconds();
 

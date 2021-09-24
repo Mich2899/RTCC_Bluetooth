@@ -30,11 +30,14 @@ void LETIMER0_IRQHandler (void) {
             //call scheduler to read temperature data from SI7021
             scheduler_evtUF ();
             rollover_count++;
+            //gpioToggleLED0();
         }
 
         if(flags & LETIMER_IF_COMP1){
             //call scheduler to read temperature data from SI7021
             scheduler_evtCOMP1 ();
+            // DOS disable COMP1 IEN as the requested time has expired
+            LETIMER_IntDisable(LETIMER0, LETIMER_IEN_COMP1);
         }
 
 } // LETIMER0_IRQHandler()

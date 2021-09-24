@@ -13,11 +13,21 @@
 #include "i2c.h"
 
 //enum to determine which state/event to be in
+// These enum values will not work. As showed in class you cannot simultaneously store the value of 2 and 3 in an uint32_t
+// these need to be bit-values
+//typedef enum {
+//evtNoEvent = 0,
+//evtUF = 1,
+//evtCOMP1 = 2,
+//evtI2C = 3,
+//}event_t;
+
+//DOS
 typedef enum {
 evtNoEvent = 0,
-evtUF = 1,
-evtCOMP1 = 2,
-evtI2C = 3,
+evtUF      = 1,
+evtCOMP1   = 2,
+evtI2C     = 4 // powers of 2 so that each bit in your event storage represents 1 event type
 }event_t;
 
 typedef enum{

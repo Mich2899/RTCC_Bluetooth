@@ -14,18 +14,24 @@
 /*******************************************************GLOBAL VARIABLES*********************************************************/
 
   I2C_TransferReturn_TypeDef transferStatus;    // used to store the transfer status
-
-  uint8_t cmd_data;                             // use this variable to send command to transfer buffer
-  uint8_t read_data[2];                         // use for storing the 16 bit temperature data recieved from si7021 in array format
-  uint16_t temp_data;                           // used for storing complete 16 bit data
   int Temperature;                              // Used to store the converted value
+  uint16_t temp_data;                           // used for storing complete 16 bit data
+
+  // DOS
+  // these need to be global so they can be accessed by the I2C ISR
+  I2C_TransferSeq_TypeDef transferSequence;
+  uint8_t                 cmd_data;             // use this variable to send command to transfer buffer
+  uint8_t                 read_data[2];         // use for storing the 16 bit temperature data recieved from si7021 in array format
+
+
+
 
 
 /*******************************************************FUNCTION DEFINITION******************************************************/
 //Enables/Disables I2C sensor
+// DOS this really belongs in gpio.c
 void gpio_I2C(int on_off){
   GPIO_PinModeSet(SENSOR_PORT, SENSOR_ENABLE, gpioModePushPull, on_off);
-
 }
 
 //Initializes the I2CSPM_Init_TypeDef structure
@@ -53,9 +59,10 @@ void I2C_init(){
 //wait for acknowledgment, send measure command, wait for acknowledgment
 void I2C_write(){
 
-  I2C_TransferSeq_TypeDef transferSequence;
+  //I2C_TransferSeq_TypeDef transferSequence; // transfer sequence needs to be global so it can be accessed by the I2C ISR
 
   I2C_init();
+
   // Send Measure Temperature command
   cmd_data = 0xF3;                                        //Provide command to perform measurement
   transferSequence.addr = SI7021_DEVICE_ADDR << 1;        //shift device address left
@@ -79,10 +86,11 @@ void I2C_write(){
 //slave address, send read command, read MS and LS byte
 void I2C_read(){
 
-  I2C_TransferSeq_TypeDef transferSequence;
+  // DOS global again, I2C_TransferSeq_TypeDef transferSequence;
   // Send Measure Temperature command
 
   I2C_init();
+
   //set the transfer sequence for read
   transferSequence.addr = SI7021_DEVICE_ADDR << 1;        //shift device address left
   transferSequence.flags = I2C_FLAG_READ;                 //read command
@@ -92,6 +100,7 @@ void I2C_read(){
   // config NVIC to generate an IRQ for the I2C0 module.
   // ==>> disable this NVIC interrupt when the I2C transfer has completed
   NVIC_EnableIRQ(I2C0_IRQn);
+
   // config NVIC to generate an IRQ for the I2C0 module.
   transferStatus = I2C_TransferInit (I2C0, &transferSequence);
 
@@ -125,7 +134,12 @@ void read_temp_from_si7021(){
 
 void warmup(){
   gpio_I2C(1);                                            //enable I2C sensor
-  timerWaitUs_irq(80000);                              //wait for 80ms for power to stabilize+ boot time
+  //DOS poor isolation of functionality, moved to state machine timerWaitUs_irq(80000);                              //wait for 80ms for power to stabilize+ boot time
+}
+
+// DOS added
+void turnoff(){
+  gpio_I2C(0);                                            //enable I2C sensor
 }
 
 void store(){
@@ -133,5 +147,5 @@ void store(){
     Temperature = ((175.72*(temp_data))/65536)-46.85;     //convert 16-bit data in degree Celcius format
     LOG_INFO("Temperature: %d\n\r", Temperature);
 
-    gpio_I2C(0);
+    //DOS poor isolation of functionality, moced to state machine gpio_I2C(0);
 }

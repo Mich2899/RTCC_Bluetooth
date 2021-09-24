@@ -34,7 +34,7 @@ void gpioLed1SetOn();
 void gpioLed1SetOff();
 
 
-
+void gpioToggleLED0(void); // DOS
 
 
 #endif /* SRC_GPIO_H_ */

@@ -27,5 +27,6 @@ void init_oscillators(void){
   CMU_ClockEnable(cmuClock_LFA, true);                                               //enabling the LFA clock
   CMU_ClockDivSet(cmuClock_LETIMER0, PRESCALAR_VALUE_ULFRCO);                        //providing the prescalar value for LETIMER0 for ULFRCO as clock input
   CMU_ClockEnable(cmuClock_LETIMER0, true);                                          //enabling the LETIMER0 clock
+  uint32_t freq = CMU_ClockFreqGet(cmuClock_LETIMER0);
 #endif
 }

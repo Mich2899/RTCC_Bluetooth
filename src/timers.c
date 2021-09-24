@@ -49,6 +49,11 @@ void initLETIMER0 (void){
 
 #endif
 
+  // read it a few times to make sure it's running
+  uint32_t temp = LETIMER_CounterGet (LETIMER0);
+  temp = LETIMER_CounterGet (LETIMER0);
+  temp = LETIMER_CounterGet (LETIMER0);
+
 }
 
 //Takes input in microseconds and provides required amount of delay
@@ -111,14 +116,18 @@ void timerWaitUs_irq(uint32_t us_wait){
         LOG_ERROR("Invalid wait input\n\r");
     }
     else{
-            current = LETIMER_CounterGet (LETIMER0);              //take the current value of the timer
-            if( current > wait_for_ticks ){                       //check if the required number of ticks are greater than current counter value
-                difference= current - wait_for_ticks;             //take the difference between current timer counter value and the required ticks
-            }
-            else{
-                difference = MAX_VALUE_TO_LOAD_COMP1 - (wait_for_ticks - current); //count until the counter reaches zero and calculate remaining number of ticks
-            }
-            LETIMER_CompareSet(LETIMER0, 1, difference);
-            LETIMER_IntEnable(LETIMER0, LETIMER_IEN_COMP1);
+        current = LETIMER_CounterGet (LETIMER0);              //take the current value of the timer
+        if( current > wait_for_ticks ){                       //check if the required number of ticks are greater than current counter value
+            difference= current - wait_for_ticks;             //take the difference between current timer counter value and the required ticks
+        }
+        else{ // DOS: I don't think ithis correct. Think about this, when in EM3 and using the ULFRC0, the valid counter range for a 3 sec
+              //      UF interrupt period is 3000 to 0. The counter will never naturally go to value above 3000. So what does that do to your
+              //      math here?
+            difference = MAX_VALUE_TO_LOAD_COMP1 - (wait_for_ticks - current); //count until the counter reaches zero and calculate remaining number of ticks
+        }
+        LETIMER_CompareSet(LETIMER0, 1, difference);
+        LETIMER_IntEnable(LETIMER0, LETIMER_IEN_COMP1);
+        LETIMER0->IEN |= LETIMER_IEN_COMP1; // compiler bug fix
+
     }
 }
