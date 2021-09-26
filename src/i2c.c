@@ -13,7 +13,7 @@
 
 /*******************************************************GLOBAL VARIABLES*********************************************************/
 
-  I2C_TransferReturn_TypeDef transferStatus;    // used to store the transfer status
+  I2C_TransferSeq_TypeDef transferSequence;     // need to be global so they can be accessed by the I2C ISR
 
   uint8_t cmd_data;                             // use this variable to send command to transfer buffer
   uint8_t read_data[2];                         // use for storing the 16 bit temperature data recieved from si7021 in array format
@@ -53,7 +53,8 @@ void I2C_init(){
 //wait for acknowledgment, send measure command, wait for acknowledgment
 void I2C_write(){
 
-  I2C_TransferSeq_TypeDef transferSequence;
+
+  I2C_TransferReturn_TypeDef transferStatus;    // used to store the transfer status
 
   I2C_init();
   // Send Measure Temperature command
@@ -69,6 +70,7 @@ void I2C_write(){
 
   // config NVIC to generate an IRQ for the I2C0 module.
   transferStatus = I2C_TransferInit (I2C0, &transferSequence);
+
   if (transferStatus < 0) {
   LOG_ERROR("I2C_TransferInit() Write error = %d", transferStatus);
   }
@@ -79,8 +81,8 @@ void I2C_write(){
 //slave address, send read command, read MS and LS byte
 void I2C_read(){
 
-  I2C_TransferSeq_TypeDef transferSequence;
-  // Send Measure Temperature command
+
+  I2C_TransferReturn_TypeDef transferStatus;    // used to store the transfer status
 
   I2C_init();
   //set the transfer sequence for read
@@ -99,39 +101,19 @@ void I2C_read(){
   LOG_ERROR("I2C_TransferInit() Write error = %d", transferStatus);
   }
 
-/*  else {
-    temp_data = (read_data[0]<<8) + read_data[1];           //store the two 8-bit data into one 16-bit variable
-    Temperature = ((175.72*(temp_data))/65536)-46.85;     //convert 16-bit data in degree Celcius format
-    LOG_INFO("Temperature: %d\n\r", Temperature);
-  }
-*/
-
 }
-
-/*
-//Used to perform temperature measurement for si7021
-void read_temp_from_si7021(){
-  gpio_I2C(1);                                            //enable I2C sensor
-  timerWaitUs_polled(80000);                              //wait for 80ms for power to stabilize+ boot time
-
-  I2C_write();                                            //perform measure command write
-  timerWaitUs_polled(10000);                              //conversion time
-  I2C_read();                                             //perform read function to get the temperature data
-
-  gpio_I2C(0);                                            //disable I2C sensor
-}
-*/
-
 
 void warmup(){
   gpio_I2C(1);                                            //enable I2C sensor
-  timerWaitUs_irq(80000);                              //wait for 80ms for power to stabilize+ boot time
 }
+
+void turnoff(){
+  gpio_I2C(0);                                            //disable I2C sensor
+}
+
 
 void store(){
     temp_data = (read_data[0]<<8) + read_data[1];           //store the two 8-bit data into one 16-bit variable
     Temperature = ((175.72*(temp_data))/65536)-46.85;     //convert 16-bit data in degree Celcius format
     LOG_INFO("Temperature: %d\n\r", Temperature);
-
-    gpio_I2C(0);
 }

@@ -17,7 +17,7 @@ typedef enum {
 evtNoEvent = 0,
 evtUF = 1,
 evtCOMP1 = 2,
-evtI2C = 3,
+evtI2C = 4,
 }event_t;
 
 typedef enum{
@@ -63,6 +63,11 @@ void scheduler_evtI2C ();
  * */
 uint32_t getNextEvent();
 
+/*  function          : temperature_state_machine
+ *  params            : uint32_t event
+ *  brief             : Takes event as input and based on the previous state updates the next state
+ *  return-type       : void
+ * */
 void temperature_state_machine (uint32_t event);
 
 #endif /* SRC_SCHEDULER_H_ */

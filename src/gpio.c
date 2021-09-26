@@ -15,10 +15,6 @@
 
 #include "gpio.h"
 
-
-
-
-
 // Set GPIO drive strengths and modes of operation
 //NOTE: gpioInit has been removed from the app_init function anyways.
 void gpioInit()
@@ -61,6 +57,18 @@ void gpioLed1SetOff()
 {
 	GPIO_PinOutClear(LED1_port,LED1_pin);
 }
+
+void gpioToggleLED0()
+{
+  static  bool on=false;
+  if (on == false) {
+    on = true;
+    GPIO_PinOutSet(LED0_port,LED0_pin);
+  } else {
+    on = false;
+    GPIO_PinOutClear(LED0_port,LED0_pin);
+  }
+} // gpioToggleLED0(0
 
 
 

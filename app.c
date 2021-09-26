@@ -89,12 +89,13 @@ SL_WEAK void app_init(void)
 
 //NOTE:This section of code is from previous assigment
 
+/*
 #if(LOWEST_ENERGY_MODE ==1 )
       sl_power_manager_add_em_requirement(SL_POWER_MANAGER_EM1);
 #elif(LOWEST_ENERGY_MODE ==2 )
       sl_power_manager_add_em_requirement(SL_POWER_MANAGER_EM2);
 #endif
-
+*/
 
   gpioInit();
   init_oscillators();                                 //Initialize oscillators

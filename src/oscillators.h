@@ -28,7 +28,9 @@
 #define VALUE_TO_LOAD_ULFRCO_COMP0  (ACTUAL_CLK_FREQ_ULFRCO *LETIMER_PERIOD_MS)/1000       //value to load in comp0 when ULFRCO is used
 //#define VALUE_TO_LOAD_ULFRCO_COMP1  (ACTUAL_CLK_FREQ_ULFRCO *(LETIMER_PERIOD_MS-LETIMER_ON_TIME_MS))/1000 //value to load in comp1 when ULFRCO is used
 
-#define MAX_VALUE_TO_LOAD_COMP1  65535  //max value that can be loaded in comp1 when ULFRCO is used
+#define MILLIECONDS_PER_TICK_LFXO   ((VALUE_TO_LOAD_LFXO_COMP0 - LETIMER_CounterGet(LETIMER0))* ACTUAL_CLK_FREQ_LFXO)/1000            //calculates milliseconds per tick for LFXO clock
+#define MILLIECONDS_PER_TICK_ULFRCO ((VALUE_TO_LOAD_ULFRCO_COMP0 - LETIMER_CounterGet(LETIMER0))*ACTUAL_CLK_FREQ_ULFRCO)/1000         //calculates milliseconds per tick for ULFRCO clock
+
 
 
 //function prototypes

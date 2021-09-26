@@ -33,6 +33,9 @@ void gpioLed0SetOff();
 void gpioLed1SetOn();
 void gpioLed1SetOff();
 
+//For toggling the LED
+void gpioToggleLED0();
+
 
 
 

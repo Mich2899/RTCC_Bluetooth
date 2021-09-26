@@ -59,8 +59,25 @@ void I2C_write();
  * */
 void I2C_read();
 
+/* function     : warmup()
+ * params       : none
+ * brief        : Enable the sensor
+ * return_type  : void
+ * */
 void warmup();
 
+/* function     : turnoff
+ * params       : none
+ * brief        : Disable the sensor
+ * return_type  : void
+ * */
+void turnoff();
+
+/* function     : store
+ * params       : none
+ * brief        : Convert and log te temperature
+ * return_type  : void
+ * */
 void store();
 
 #endif /* SRC_I2C_H_ */

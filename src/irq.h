@@ -12,22 +12,11 @@
 #include "oscillators.h"
 #include "scheduler.h"
 
-//function prorotypes
-/* function       : LETIMER0_IRQHandler
- * params         : void
- * brief          : check for any timer interrupts, set the scheduler event accordingly
- * return type    : void
- */
-void LETIMER0_IRQHandler(void);
-
-/* function       : I2C0_IRQHandler
- * params         : void
- * brief          : check for any interrupts, set the scheduler event based on the
- *                  previous state.
- * return type    : void
- */
-void I2C0_IRQHandler(void);
-
+/* function     : letimerMilliseconds
+ * params       : void
+ * brief        : Calculates milliseconds since boot
+ * return_type  : uint32_t
+ * */
 uint32_t letimerMilliseconds();
 
 #endif /* SRC_IRQ_H_ */

@@ -13,8 +13,8 @@
 #include "log.h"
 
 
-uint32_t count1=0, count2=0, rollover_count=0;
-uint32_t milliseconds;
+uint32_t rollover_count=0, milliseconds=0;
+I2C_TransferReturn_TypeDef transferStatus;
 
 /****************************************************FUNCTION DEFINITION*********************************************************/
 //Check for any interrupts, turn the LED on and off accordingly and reset the interrupt flags.
@@ -41,7 +41,6 @@ void LETIMER0_IRQHandler (void) {
 
 void I2C0_IRQHandler(void) {
 
-        I2C_TransferReturn_TypeDef transferStatus;
         // This shepherds the IC2 transfer along,
         // it’s a state machine! see em_i2c.c
         // It accesses global variables :
@@ -59,9 +58,9 @@ void I2C0_IRQHandler(void) {
 
 uint32_t letimerMilliseconds(){
 #if ((LOWEST_ENERGY_MODE == 0) || (LOWEST_ENERGY_MODE == 1) || (LOWEST_ENERGY_MODE == 2))
-    milliseconds = rollover_count*LETIMER_PERIOD_MS + ((LETIMER_CounterGet(LETIMER0))* ACTUAL_CLK_FREQ_LFXO)/1000;
+    milliseconds = rollover_count*LETIMER_PERIOD_MS + MILLIECONDS_PER_TICK_LFXO;
 #elif (LOWEST_ENERGY_MODE == 3)
-    milliseconds = rollover_count*LETIMER_PERIOD_MS + ((LETIMER_CounterGet(LETIMER0))*ACTUAL_CLK_FREQ_ULFRCO)/1000;
+    milliseconds = rollover_count*LETIMER_PERIOD_MS + MILLIECONDS_PER_TICK_ULFRCO;
 #endif
 
     return milliseconds;
