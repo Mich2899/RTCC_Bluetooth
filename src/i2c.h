@@ -75,7 +75,7 @@ void turnoff();
 
 /* function     : store
  * params       : none
- * brief        : Convert and log te temperature
+ * brief        : Convert and log the temperature
  * return_type  : void
  * */
 void store();

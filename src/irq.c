@@ -35,6 +35,7 @@ void LETIMER0_IRQHandler (void) {
         if(flags & LETIMER_IF_COMP1){
             //call scheduler to read temperature data from SI7021
             scheduler_evtCOMP1 ();
+            //LETIMER_IntDisable(LETIMER0, LETIMER_IEN_COMP1);
         }
 
 } // LETIMER0_IRQHandler()

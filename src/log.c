@@ -38,8 +38,8 @@ uint32_t loggerGetTimestamp()
        //           as this may effect your energy measurements and your grade.
        
        // Develop this function if you so desire for debugging purposes only
-	   return getSysTicks();
-	   
+     return getSysTicks();
+
     #else
     
        // Students: You will eventually develop this function letimerMilliseconds()
@@ -47,8 +47,8 @@ uint32_t loggerGetTimestamp()
        //           assignments. Put this function in your irq.c/.h files.
        
        return letimerMilliseconds();
-	   //return (0);
-	   
+     //return (0);
+
     #endif
 
 } // loggerGetTimestamp
@@ -93,13 +93,13 @@ void printSLErrorString(sl_status_t status) {
 
 //void logInit(void)
 //{
-//	RETARGET_SerialInit();
-//	/**
-//	 * See https://siliconlabs.github.io/Gecko_SDK_Doc/efm32g/html/group__RetargetIo.html#ga9e36c68713259dd181ef349430ba0096
-//	 * RETARGET_SerialCrLf() ensures each linefeed also includes carriage return.  Without it, the first character is shifted in TeraTerm
-//	 */
-//	RETARGET_SerialCrLf(true);
-//	LOG_INFO("Initialized Logging");
+//  RETARGET_SerialInit();
+//  /**
+//   * See https://siliconlabs.github.io/Gecko_SDK_Doc/efm32g/html/group__RetargetIo.html#ga9e36c68713259dd181ef349430ba0096
+//   * RETARGET_SerialCrLf() ensures each linefeed also includes carriage return.  Without it, the first character is shifted in TeraTerm
+//   */
+//  RETARGET_SerialCrLf(true);
+//  LOG_INFO("Initialized Logging");
 //}
 
 ///**
@@ -107,7 +107,7 @@ void printSLErrorString(sl_status_t status) {
 // */
 //void logFlush(void)
 //{
-//	RETARGET_SerialFlush();
+//  RETARGET_SerialFlush();
 //}
 
 
