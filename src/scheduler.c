@@ -106,7 +106,7 @@ void temperature_state_machine (uint32_t event) {
          if (event & evtI2C) {                                                  //if I2C event encountered
              NVIC_DisableIRQ(I2C0_IRQn);                                        //Disable I2C interrupt
              sl_power_manager_remove_em_requirement(SL_POWER_MANAGER_EM1);      //go back to EM3 sleep state
-             timerWaitUs_irq(11000);                                            //wait at least 10.8ms
+             timerWaitUs_irq(10800);                                            //wait at least 10.8ms
              nextState = timerwait;                                             //set next state to timerwait
          }
          break;
