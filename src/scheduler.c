@@ -1,6 +1,6 @@
 /*
  * scheduler.c
- * Schedules event to measure temperature from SI7021.
+ * Schedules event for Underflow, COMP1 and I2C.
  *  Created on: Sep 15, 2021
  *      Author: mich1576
  */
