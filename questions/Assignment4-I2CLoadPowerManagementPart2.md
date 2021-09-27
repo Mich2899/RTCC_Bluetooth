@@ -26,10 +26,10 @@ See [Mastering Markdown](https://guides.github.com/features/mastering-markdown/)
    ![duration_lpm_on](https://github.com/CU-ECEN-5823/ecen5823-assignment4-Mich2899/blob/master/questions/screenshots/assignment4/duration_lpm_on.PNG)  
 
 5. Compute what the total operating time of your design for assignment 4 would be in hours, assuming a 1000mAh battery power supply?
-   Answer: **Considering the average current per period for the device (period being 3 seconds), the current consumed for an hour would be 17.472 mA. We are provided a power supply of 1000 mAh and hence the total operting time for the device would be 57.23 hours. This is considering that the average current is almost similar for every period. **
+   Answer: **Considering the average current per period for the device (period being 3 seconds), the current consumed for an hour would be 17.472 mA. We are provided a power supply of 1000 mAh and hence the total operting time for the device would be 57.23 hours. This is considering that the average current is almost similar for every period.**
    
 6. How has the power consumption performance of your design changed since the previous assignment?
-   Answer: **As compared to the previous implementation method(polling), it has improved to a great extent. As we can observe in the table below the current consumption has drastically changed from the polling method.**
+   Answer: **As compared to the previous implementation method(polling), it has improved to a great extent. As we can observe in the table below the current consumption has drastically changed from the polling method. The avg current per period decreased to one tenth of the previous value and avg on current by a hundredth. Current consumption and hence power consumption has decreased.**
    ```
    |Parameter              | Value using polling method | Value using interrupt method |
    -------------------------------------------------------------------------------------
