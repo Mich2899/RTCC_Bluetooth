@@ -115,5 +115,5 @@ void turnoff(){
 void store(){
     temp_data = (read_data[0]<<8) + read_data[1];           //store the two 8-bit data into one 16-bit variable
     Temperature = ((175.72*(temp_data))/65536)-46.85;     //convert 16-bit data in degree Celcius format
-    LOG_INFO("Temperature: %d\n\r", Temperature);
+    //LOG_INFO("Temperature: %d\n\r", Temperature);
 }
