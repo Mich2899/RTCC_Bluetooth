@@ -29,13 +29,14 @@ See [Mastering Markdown](https://guides.github.com/features/mastering-markdown/)
    Answer: Considering the average current per period for the device (period being 3 seconds), the current consumed for an hour would be 17.472 mA. We are provided a power supply of 1000 mAh and hence the total operting time for the device would be 57.23 hours. This is considering that the average current is almost similar for every period. 
    
 6. How has the power consumption performance of your design changed since the previous assignment?
-   Answer: As compared to the previous implementation method(polling), it has improved to a great extent. As we can observe in the table below the current consumption has drastically changed from the polling method. 
+   Answer: As compared to the previous implementation method(polling), it has improved to a great extent. As we can observe in the table below the current consumption has drastically changed from the polling method.
+   ```
    |Parameter              | Value using polling method | Value using interrupt method |
    -------------------------------------------------------------------------------------
    |Avg_current_per_period |           145.41 uA        |            14.56 uA          |
    -------------------------------------------------------------------------------------
    |Avg_current_LPM_On     |            4.37 mA         |            489.59 uA         |
-   
+   ```
 7. Describe how you have tested your code to ensure you are sleeping in EM1 mode during I2C transfers.
    Answer: The code normally operates in EM3 mode. There are five states that the device operates in considering the state machine implemention. The states are Idle, Warmup, timerwait, write and read. Once the sensor is given time to power-up (LPM 80ms), we add an sleep power manager requirement for the device to sleep in EM1 and remove this requirement once the write transfer is completed. Similarly, the requirement is added after the 10.8 ms delay between write and read transfer is completed. Once the read transfer successfully finishes we remove the requirement. Hence the device successfully sleeps during I2C transfers.
    
